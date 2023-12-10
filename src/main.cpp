@@ -2336,7 +2336,7 @@ void looppid() {
     if (currentMillisDisplay - previousMillisDisplay >= 100) {
         displayShottimer();
     }
-    if (currentMillisDisplay - previousMillisDisplay >= (machineState != kWaterEmpty ? intervalDisplay : intervalDisplayFast) ) {
+    if (currentMillisDisplay - previousMillisDisplay >= ( (machineState != kWaterEmpty) ? intervalDisplay : intervalDisplayFast) ) {
         previousMillisDisplay = currentMillisDisplay;
     #if DISPLAYTEMPLATE < 20  // not using vertical template
         Displaymachinestate();
