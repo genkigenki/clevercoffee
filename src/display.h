@@ -281,16 +281,14 @@ void Displaymachinestate() {
     if (machineState == kWaterEmpty) {
         u8g2.clearBuffer();
         u8g2.setBitmapMode(1);
-        // first drop
-//        dropPosition = pow(displayAnimCounter%16,2)/4+8; // y from 8 to 63, 28 is visible
-//        u8g2.drawXBMP( 42, dropPosition, water_empty_big_drop_width, water_empty_big_drop_height, water_EMPTY_big_drop_u8g2);
 
+        //two water drops fall after each other
         for (i = 0; i < 2; ++i) {
             dropPosition = pow((displayAnimCounter+i*16)%32,2)/16+8; 
            u8g2.drawXBMP( 42, dropPosition, water_empty_big_drop_width, water_empty_big_drop_height, water_EMPTY_big_drop_u8g2);
         }
 
-        // remove upper part of drop
+        // remove upper part of drop which should be hidden by the tap
         u8g2.setDrawColor(0);
         u8g2.drawBox(42, 8, 15, 20);
         u8g2.setDrawColor(1);
