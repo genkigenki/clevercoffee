@@ -8,6 +8,8 @@
 
 #if (OLED_DISPLAY != 0)
 
+unsigned long displayAnimCounter = 0;
+unsigned long dropPosition;
 
 /**
  * @brief initialize display
@@ -54,7 +56,6 @@ void displayMessage(String text1, String text2, String text3, String text4, Stri
     displayIcons();
     u8g2.sendBuffer();
 }
-
 
 /**
  * @brief print logo and message at boot
@@ -177,6 +178,13 @@ void displayShottimer(void) {
  * @brief display heating logo
  */
 void Displaymachinestate() {
+    displayAnimCounter++;
+    
+    if(displayAnimCounter > 255)
+    {
+        displayAnimCounter = 0;
+    }
+
     if (HEATINGLOGO > 0 && (machineState == kInit || machineState == kColdStart)) {
         // For status info
         u8g2.clearBuffer();
@@ -271,8 +279,19 @@ void Displaymachinestate() {
     // Water empty
     if (machineState == kWaterEmpty) {
         u8g2.clearBuffer();
-        u8g2.drawXBMP( 45, 0, water_empty_big_width, water_empty_big_height, water_EMPTY_big_u8g2); 
-        u8g2.setFont(u8g2_font_profont11_tf);
+        u8g2.setBitmapMode(1);
+        // first drop
+        dropPosition = pow(displayAnimCounter%16,2)/4+8; // y from 8 to 63, 28 is visible
+        u8g2.drawXBMP( 42, dropPosition, water_empty_big_drop_width, water_empty_big_drop_height, water_EMPTY_big_drop_u8g2);
+        // second drop
+        dropPosition = pow((displayAnimCounter+8)%16,2)/4+8; 
+        u8g2.drawXBMP( 42, dropPosition, water_empty_big_drop_width, water_empty_big_drop_height, water_EMPTY_big_drop_u8g2);
+        // remove upper part of drop
+        u8g2.setDrawColor(0);
+        u8g2.drawBox(42, 8, 15, 20);
+        u8g2.setDrawColor(1);
+        // draw tap with transparent background
+        u8g2.drawXBMP( 42, 0, water_empty_big_tap_width, water_empty_big_tap_height, water_EMPTY_big_tap_u8g2);
         u8g2.sendBuffer();
     }
 
