@@ -2298,8 +2298,6 @@ void looppid() {
         checkPressure();
     #endif
 
-    checkSteamON();
-
     if(machineState != kWaterEmpty) {
         brew();
     }
