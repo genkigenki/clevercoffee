@@ -307,9 +307,6 @@ PID bPID(&temperature, &pidOutput, &setpoint, aggKp, aggKi, aggKd, 1, DIRECT);
 // TSIC 306 temp sensor
 ZACwire Sensor2(PIN_TEMPSENSOR, 306);    // set pin to receive signal from the TSic 306
 
-
-#include "InfluxDB.h"
-
 // Embedded HTTP Server
 #include "EmbeddedWebserver.h"
 
@@ -2055,11 +2052,8 @@ void setup() {
             sendHASSIODiscoveryMsg();
             #endif
         }
-
-        if (INFLUXDB == 1) {
-           influxDbSetup();
-        }
-    } else if (connectmode == 0) {
+    }
+    else if (connectmode == 0) {
         wm.disconnect();              // no wm
         readSysParamsFromStorage();   // get all parameters from storage
         offlineMode = 1;              // offline mode
@@ -2096,7 +2090,6 @@ void setup() {
     windowStartTime = currentTime;
     previousMillisDisplay = currentTime;
     previousMillisMQTT = currentTime;
-    previousMillisInflux = currentTime;
     previousMillisVoltagesensorreading = currentTime;
     lastMQTTConnectionAttempt = currentTime;
 
@@ -2231,10 +2224,6 @@ void looppid() {
     }
     
     handleMachineState(); 
-
-    if (INFLUXDB == 1  && offlineMode == 0 ) {
-        sendInflux();
-    }
 
     #if (ONLYPIDSCALE == 1)  // only by shottimer 2, scale
         shottimerscale();
