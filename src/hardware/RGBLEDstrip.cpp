@@ -93,7 +93,7 @@ void RGBLEDstrip::setLEDRangeColorTwoValues(int start, int endPlusOne, int hue, 
 
 int RGBLEDstrip::assignLED() {
     numAssignedLEDs++;
-    return numAssignedLEDs-1;
+    return numAssignedLEDs-1; 
 }
 
 int RGBLEDstrip::getNumAssignedLEDs() {

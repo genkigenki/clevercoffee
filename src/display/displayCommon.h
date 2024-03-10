@@ -222,15 +222,24 @@ void displayMessage(String text1, String text2, String text3, String text4, Stri
 }
 
 /**
+ * @brief update startupcounter
+ */
+void displayStartupCounter(int step) {
+    u8g2.setCursor(0, 35);
+    u8g2.setFontMode(0);
+    u8g2.print("BOOT ");
+    u8g2.print(step);
+    u8g2.sendBuffer();
+}
+
+/**
  * @brief print logo and message at boot
  */
 void displayLogo(String displaymessagetext, String displaymessagetext2) {
     u8g2.clearBuffer();
+    u8g2.drawXBMP(38, 0, CleverCoffee_Logo_width, CleverCoffee_Logo_height, CleverCoffee_Logo);
     u8g2.drawStr(0, 45, displaymessagetext.c_str());
     u8g2.drawStr(0, 55, displaymessagetext2.c_str());
-
-    u8g2.drawXBMP(38, 0, CleverCoffee_Logo_width, CleverCoffee_Logo_height, CleverCoffee_Logo);
-
     u8g2.sendBuffer();
 }
 

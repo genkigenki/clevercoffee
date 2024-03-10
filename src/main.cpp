@@ -1472,6 +1472,8 @@ void wiFiSetup() {
 
     sysParaWifiCredentialsSaved.getStorage();
 
+displayStartupCounter(32);
+
     if (wifiCredentialsSaved == 0) {
         const char hostname[] = (STR(HOSTNAME));
         LOGF(INFO, "Connecting to WiFi: %s", String(hostname));
@@ -1481,12 +1483,19 @@ void wiFiSetup() {
         #endif
     }
 
+displayStartupCounter(33);
+
     wm.setHostname(hostname);
+
+displayStartupCounter(34);
 
     if (wm.autoConnect(hostname, pass)) {
         wifiCredentialsSaved = 1;
         sysParaWifiCredentialsSaved.setStorage();
         storageCommit();
+
+displayStartupCounter(35);
+
         LOGF(INFO, "WiFi connected - IP = %i.%i.%i.%i", WiFi.localIP()[0],
                     WiFi.localIP()[1], WiFi.localIP()[2], WiFi.localIP()[3]);
         byte mac[6];
@@ -1507,10 +1516,15 @@ void wiFiSetup() {
             displayLogo(langstring_nowifi[0], langstring_nowifi[1]);
         #endif
 
+displayStartupCounter(36);
+
         wm.disconnect();
         delay(1000);
 
         offlineMode = 1;
+
+displayStartupCounter(37);
+
     }
 
     #if OLED_DISPLAY != 0
@@ -1525,14 +1539,22 @@ void wiFiSetup() {
 void websiteSetup() {
     setEepromWriteFcn(writeSysParamsToStorage);
 
+displayStartupCounter(41);
+
     readSysParamsFromStorage();
 
+displayStartupCounter(42);
+
     serverSetup();
+
+displayStartupCounter(43);
+
 }
 
 const char sysVersion[] = (STR(FW_VERSION) "." STR(FW_SUBVERSION) "." STR(FW_HOTFIX) " " FW_BRANCH " " AUTO_VERSION);
 
 void setup() {
+
     // Start serial console
     Serial.begin(115200);
 
@@ -2110,7 +2132,6 @@ void setup() {
     #endif
 
     initTimer1();
-
     storageSetup();
 
     if (optocouplerType == HIGH) {
@@ -2175,7 +2196,7 @@ void setup() {
         LEDupdate.reset(); // reset timer
 
     }
-
+    
     if (FEATURE_WATER_SENS == 1) {
         if (WATER_SENS_TYPE == 0) {
             waterSensPin = new GPIOPin(PIN_WATERSENSOR, GPIOPin::IN_PULLUP);
@@ -2193,10 +2214,17 @@ void setup() {
         delay(2000); // caused crash with wifi manager on esp8266, should be ok on esp32
     #endif
 
+displayStartupCounter(30);
+
     // Fallback offline
     if (connectmode == 1) {  // WiFi Mode
         wiFiSetup();
+
+displayStartupCounter(40);
+
         websiteSetup();
+
+displayStartupCounter(50);
 
         // OTA Updates
         if (ota && WiFi.status() == WL_CONNECTED) {
@@ -2204,6 +2232,8 @@ void setup() {
             ArduinoOTA.setPassword(OTApass);  //  Password for OTA
             ArduinoOTA.begin();
         }
+
+displayStartupCounter(51);
 
         if (FEATURE_MQTT == 1) {
             snprintf(topic_will, sizeof(topic_will), "%s%s/%s", mqtt_topic_prefix, hostname, "status");
@@ -2223,12 +2253,16 @@ void setup() {
         pidON = 1;                    // pid on
     }
 
+displayStartupCounter(52);
+
     // Initialize PID controller
     bPID.SetSampleTime(windowSize);
     bPID.SetOutputLimits(0, windowSize);
     bPID.SetIntegratorLimits(0, AGGIMAX);
     bPID.SetSmoothingFactor(EMA_FACTOR);
     bPID.SetMode(AUTOMATIC);
+
+displayStartupCounter(53);
 
     if (TEMP_SENSOR == 1) {
         tempSensor = new TempSensorDallas(PIN_TEMPSENSOR);
@@ -2237,14 +2271,20 @@ void setup() {
         tempSensor = new TempSensorTSIC(PIN_TEMPSENSOR);
     }
 
+displayStartupCounter(54);
+
     temperature = tempSensor->getTemperatureCelsius();
 
     temperature -= brewTempOffset;
+
+displayStartupCounter(60);
 
     // Init Scale by BREWMODE 2 or SHOTTIMER 2
     #if (BREWMODE == 2 || ONLYPIDSCALE == 1)
         initScale();
     #endif
+
+displayStartupCounter(61);
 
     // Initialisation MUST be at the very end of the init(), otherwise the
     // time comparision in loop() will have a big offset
@@ -2264,17 +2304,27 @@ void setup() {
         previousMillisPressure = currentTime;
     #endif
 
-    setupDone = true;
+displayStartupCounter(62);
+//delay(2000); 
 
+    setupDone = true;
     enableTimer1();
+
+displayStartupCounter(63);
 
     // Start the logger
     Logger::begin();
+
+displayStartupCounter(64);
+
     Logger::setLevel(LOGLEVEL);
 
     double fsUsage = ((double)LittleFS.usedBytes() / LittleFS.totalBytes()) * 100;
     LOGF(INFO, "LittleFS: %d%% (used %ld bytes from %ld bytes)",
         (int)ceil(fsUsage), LittleFS.usedBytes(), LittleFS.totalBytes());
+
+displayStartupCounter(100);
+//delay(1000);
 }
 
 
